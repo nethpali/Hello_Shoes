@@ -2,9 +2,11 @@ package lk.com.ijse.hello_shoes_test.Util;
 
 import lk.com.ijse.hello_shoes_test.DTO.CustomerDto;
 import lk.com.ijse.hello_shoes_test.DTO.EmployeeDto;
+import lk.com.ijse.hello_shoes_test.DTO.SupplierDto;
 import lk.com.ijse.hello_shoes_test.DTO.UserDto;
 import lk.com.ijse.hello_shoes_test.Entity.Customer;
 import lk.com.ijse.hello_shoes_test.Entity.Employee;
+import lk.com.ijse.hello_shoes_test.Entity.Supplier;
 import lk.com.ijse.hello_shoes_test.Entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -60,5 +62,21 @@ public class Mapping {
     public List<CustomerDto> toCustomerList(List<Customer> customers){
         return modelMapper.map(customers,List.class);
     }
+
+
+    //-----------------------Supplier----------//
+
+    public SupplierDto toSupplierDto(Supplier supplier){
+        return modelMapper.map(supplier,SupplierDto.class);
+    }
+
+    public Supplier toSupplierEntity(SupplierDto supplierDto){
+        return modelMapper.map(supplierDto,Supplier.class);
+    }
+
+    public List<SupplierDto> toSupplierList(List<Supplier> suppliers){
+        return modelMapper.map(suppliers,List.class);
+    }
+
 
 }
