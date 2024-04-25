@@ -1,6 +1,10 @@
 package lk.com.ijse.hello_shoes_test.Util;
 
+import lk.com.ijse.hello_shoes_test.DTO.CustomerDto;
+import lk.com.ijse.hello_shoes_test.DTO.EmployeeDto;
 import lk.com.ijse.hello_shoes_test.DTO.UserDto;
+import lk.com.ijse.hello_shoes_test.Entity.Customer;
+import lk.com.ijse.hello_shoes_test.Entity.Employee;
 import lk.com.ijse.hello_shoes_test.Entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -26,4 +30,35 @@ public class Mapping {
     public List<User> toUserDTOList(List<User> users){
         return modelMapper.map(users,List.class);
     }
+
+
+//    ------------Employee-------------------------//
+
+    public EmployeeDto toEmployeeDTO(Employee employee){
+        return modelMapper.map(employee,EmployeeDto.class);
+    }
+
+    public Employee toEmployeeEntity(EmployeeDto employeeDto){
+        return modelMapper.map(employeeDto,Employee.class);
+    }
+
+    public List<EmployeeDto> toEmployeeList(List<Employee> employees){
+        return modelMapper.map(employees,List.class);
+    }
+
+
+    //-------------------Customer-------------------------//
+
+    public CustomerDto toCustomerDto(Customer customer){
+        return modelMapper.map(customer,CustomerDto.class);
+    }
+
+    public Customer toCustomerEntity(CustomerDto customerDto){
+        return modelMapper.map(customerDto,Customer.class);
+    }
+
+    public List<CustomerDto> toCustomerList(List<Customer> customers){
+        return modelMapper.map(customers,List.class);
+    }
+
 }
