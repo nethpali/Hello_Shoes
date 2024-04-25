@@ -126,4 +126,9 @@ public class EmployeeController {
 
         return employeeService.updateEmployee(employeeId, employeeDto, password);
     }
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public boolean deleteEmployee(String email){
+        return employeeService.deleteEmployee(email);
+    }
 }
