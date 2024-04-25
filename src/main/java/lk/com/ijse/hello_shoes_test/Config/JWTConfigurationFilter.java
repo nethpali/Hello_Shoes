@@ -30,31 +30,29 @@ public class JWTConfigurationFilter extends OncePerRequestFilter {
         final String userEmail;
         final String jwt;
 
-        final String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        //validation - Get auth Header status
-        if (StringUtils.isEmpty(authorization) || authorization.startsWith("Bearer ")){
+        if (StringUtils.isEmpty(authorization) || !authorization.startsWith("Bearer " )) {
             filterChain.doFilter(request,response);
             return;
         }
+
         jwt=authorization.substring(7);
         userEmail=jwtService.extractUserName(jwt);
+        System.out.println("//////////////////////^^^^^^^^^^^^^^^^^^/////////////////////");
 
         //validation
-        if(!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext()==null){
+        if(!StringUtils.isEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails=userService.userDetailsService().loadUserByUsername(userEmail);
 
-
-            //Validation of Token Status
-            if(jwtService.isValidateToken(jwt,userDetails)){
-                SecurityContext emptyContext=SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken =new UsernamePasswordAuthenticationToken(
-                        userDetails,null,userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                emptyContext.setAuthentication(authToken);
+            if (jwtService.isValidateToken(jwt, userDetails)) {
+                SecurityContext emptyContext = SecurityContextHolder.createEmptyContext();
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource());
+                emptyContext.setAuthentication(authenticationToken);
                 SecurityContextHolder.setContext(emptyContext);
             }
         }
+        filterChain.doFilter(request,response);
     }
 }

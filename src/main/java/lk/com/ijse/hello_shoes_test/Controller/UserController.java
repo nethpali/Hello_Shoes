@@ -22,6 +22,7 @@ public class UserController {
     //sign up
     @PostMapping(value = "/signup")
     public ResponseEntity<JwtAuthResponse> signUp(@RequestBody SignUp signUp){
+        System.out.println("///////////////////////////////////");
         return ResponseEntity.ok(authenticationService.signUp(signUp));
     }
 

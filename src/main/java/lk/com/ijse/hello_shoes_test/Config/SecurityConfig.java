@@ -25,14 +25,16 @@ public class SecurityConfig {
     private final JWTConfigurationFilter jwtConfigurationFilter;
 
     @Bean
-    SecurityFilterChain securityFilerChain(HttpSecurity http)throws Exception{
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->req.requestMatchers("api/v1/user/**")
+                .authorizeRequests(req -> req.requestMatchers("/api/v1/user/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(jwtConfigurationFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtConfigurationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 

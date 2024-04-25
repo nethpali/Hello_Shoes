@@ -1,8 +1,11 @@
 package lk.com.ijse.hello_shoes_test.Service.Impl;
 
+import lk.com.ijse.hello_shoes_test.DTO.EmployeeDto;
 import lk.com.ijse.hello_shoes_test.DTO.UserDto;
 import lk.com.ijse.hello_shoes_test.Dao.UserDao;
+import lk.com.ijse.hello_shoes_test.Entity.Employee;
 import lk.com.ijse.hello_shoes_test.Entity.Role;
+import lk.com.ijse.hello_shoes_test.Entity.User;
 import lk.com.ijse.hello_shoes_test.Service.AuthenticationService;
 import lk.com.ijse.hello_shoes_test.Service.JWTService;
 import lk.com.ijse.hello_shoes_test.Util.Mapping;
@@ -30,12 +33,8 @@ public class AuthenticationServiceIMPL implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     @Override
     public JwtAuthResponse signIn(SignIn signIn) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        signIn.getEmail(),
-                        signIn.getPassword()));
-        var userByEmail=userDao.findByEmail(signIn.getEmail())
-                .orElseThrow(()-> new UsernameNotFoundException("User not Found"));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signIn.getEmail(), signIn.getPassword()));
+        var userByEmail=userDao.findByEmail(signIn.getEmail()).orElseThrow(()-> new UsernameNotFoundException("User not Found"));
         var generatedToken= jwtService.generateToken(userByEmail);
         return JwtAuthResponse.builder().token(generatedToken).build();
     }
@@ -48,8 +47,27 @@ public class AuthenticationServiceIMPL implements AuthenticationService {
                 .password(passwordEncoder.encode(signUp.getPassword()))
                 .role(Role.valueOf(signUp.getRole()))
                 .build();
-        var saveUser= userDao.save(map.toUserEntity(buildUser));
+        var saveUser = userDao.save(map.toUserEntity(buildUser));
         String generateToken = jwtService.generateToken(saveUser);
+        return JwtAuthResponse.builder().token(generateToken).build();
+    }
+
+    @Override
+    public JwtAuthResponse signUp(SignUp signUp, EmployeeDto employeeDto) {
+        UserDto build = UserDto.builder()
+                .userId(UUID.randomUUID().toString())
+                .email(signUp.getEmail())
+                .password(passwordEncoder.encode(signUp.getPassword()))
+                .role(Role.valueOf(signUp.getRole()))
+                .build();
+
+        User save = map.toUserEntity(build);
+        Employee employee = new Employee();
+        employee.setEmployee_code(employeeDto.getEmployee_code());
+        save.setEmployee(employee);
+
+        User user = userDao.save(save);
+        String generateToken = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(generateToken).build();
     }
 }

@@ -45,14 +45,22 @@ public class JWTServiceIMPL implements JWTService {
     private String generateToken(Map<String,Object> extractClaims, UserDetails userDetails){
         extractClaims.put("role",userDetails.getAuthorities());
         Date now = new Date();
-        Date expire = new Date(now.getTime() + 1000 * 600);
+        Date expiryDate = new Date(now.getTime() + 1000*60*60*24);
+        Date refreshTokenExpire = new Date(now.getTime() + 1000*60*60*24);
 
         String accessToken = Jwts.builder().setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(now)
-                .setExpiration(expire)
+                .setExpiration(expiryDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
-        return accessToken;
+
+        String refreshToken = Jwts.builder().setClaims(extractClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(now)
+                .setExpiration(refreshTokenExpire)
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+
+        return accessToken+" : " +refreshToken;
     }
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
@@ -61,8 +69,7 @@ public class JWTServiceIMPL implements JWTService {
         return extractClaim(token,Claims::getExpiration);
     }
     private Claims getAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token)
-                .getBody();
+        return Jwts.parser().setSigningKey(getSignKey()).parseClaimsJws(token).getBody();
     }
 
     private Key getSignKey(){
