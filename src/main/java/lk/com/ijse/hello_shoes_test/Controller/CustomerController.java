@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,7 +27,16 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/update",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public boolean updateCustomer(@RequestBody CustomerDto customerDto){
+    public boolean updateCustomer(@RequestBody CustomerDto customerDto) {
         return customerService.updateCustomer(customerDto.getCustomer_code(), customerDto);
+    }
+
+    @DeleteMapping({"/delete"})
+    public boolean delete(@RequestPart("customer_id") String id) {
+        return customerService.deleteCustomer(id);
+    }
+    @GetMapping("/getAllCus")
+    public List<CustomerDto> getAllCustomer(){
+        return customerService.getAllCustomer();
     }
 }
