@@ -37,7 +37,7 @@ public class SupplierController {
     public boolean deleteSupplier(@RequestPart("supplier_id") String id) {
         return supplierService.deleteSupplier(id);
     }
-    @GetMapping("/getAllCus")
+    @GetMapping("/getAllSup")
     public List<SupplierDto> getAllSupplier(){
         return supplierService.getAllCustomer();
     }
