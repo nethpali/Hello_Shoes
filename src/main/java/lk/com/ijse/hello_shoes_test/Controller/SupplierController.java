@@ -1,11 +1,13 @@
 package lk.com.ijse.hello_shoes_test.Controller;
 
+import lk.com.ijse.hello_shoes_test.DTO.CustomerDto;
 import lk.com.ijse.hello_shoes_test.DTO.SupplierDto;
 import lk.com.ijse.hello_shoes_test.Service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -30,5 +32,13 @@ public class SupplierController {
     public boolean updateSupplier(@RequestBody SupplierDto supplierDto){
         return supplierService.updateSupplier(supplierDto.getSupplier_code(), supplierDto);
 
+    }
+    @DeleteMapping({"/delete"})
+    public boolean deleteSupplier(@RequestPart("supplier_id") String id) {
+        return supplierService.deleteSupplier(id);
+    }
+    @GetMapping("/getAllCus")
+    public List<SupplierDto> getAllSupplier(){
+        return supplierService.getAllCustomer();
     }
 }
